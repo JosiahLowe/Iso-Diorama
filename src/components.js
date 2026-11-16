@@ -1,4 +1,5 @@
 import { COS30, project, solid, group, ellipse, circle, path } from './geometry.js';
+import { churchModel, mainRoofHeight, porchRoofHeight, stairTreads, crossOutline } from './church-model.js';
 
 export function Tree(object) {
   const { distant = false, palette = ['#a5b252', '#91a34c', '#7f9848'] } = object;
@@ -73,47 +74,54 @@ function arch(x, bottom, width, height, color) {
   return path(`M${left} ${bottom} V${top+width*.65} Q${left} ${top+width*.15} ${x} ${top} Q${right} ${top+width*.15} ${right} ${top+width*.65} V${bottom}Z`,color);
 }
 
-// Architecture shares the ground coordinate system. Only the church's local
-// coordinates are authored here; moving its scene position moves every part.
+// Every joint is authored in world coordinates before projection.
 export function Church(object) {
+  const { center:c, main:m, porch:p, door:d, tower:t } = churchModel;
+  const wallEave = mainRoofHeight(0)-m.skin;
   const walls =
-    solid([[0,0,0],[170,0,0],[170,0,145],[85,0,226],[0,0,145]], '#eee4c9') +
-    solid([[170,0,0],[170,-210,0],[170,-210,145],[170,0,145]], '#e2d7b9');
-  const windows = plane(0,0,'front', arch(24,-47,16,53,'#a39878') + arch(148,-40,16,53,'#a39878')) +
-    plane(170,0,'side',[48,107,168].map(x => arch(x,-40,17,53,'#958a6d') + arch(x-2,-43,11,47,'#a69b7c')).join(''));
-  const roof = solid([[-10,12,147],[85,12,238],[85,-220,238],[-10,-220,147]], '#bc8058') +
-    solid([[85,12,238],[180,12,147],[180,-220,147],[85,-220,238]], '#b97751') +
-    solid([[180,12,147],[180,-220,147],[180,-220,140],[180,12,140]], '#986747') +
-    solid([[-10,12,147],[85,12,238],[85,12,229],[-10,12,139]], '#9f6b48');
-  // A few broad roof planes provide depth without a tiled texture.
-  const seams = [0,46,92,138,184].map(d => solid([[86,-d,237],[179,-d,148],[179,-d-2,148],[86,-d-2,237]], '#b2734e')).join('');
-  // The shaft emerges from the pitched roof, so its lower boundary follows
-  // that roof's two planes instead of covering the gable with a long rectangle.
-  const roofHeight = u => 238 - Math.abs(u - 85) * (91 / 95);
-  const tower = solid([[55,0,roofHeight(55)],[85,0,238],[109,0,roofHeight(109)],[109,0,310],[55,0,310]], '#f0e5ca') +
-    solid([[109,0,roofHeight(109)],[109,-54,roofHeight(109)],[109,-54,310],[109,0,310]], '#dfd2b2') +
-    plane(55,0,'front',arch(27,-253,17,45,'#9c8c6c'));
-  // One square hip roof, with only the two camera-facing triangles visible.
-  // Both share the apex and the nearest eave corner. Drawing the hidden rear
-  // triangle last would incorrectly cut a diagonal across the front roof face.
-  const spire = solid([[50,5,310],[114,5,310],[82,-27,380]], '#bd7b55') +
-    solid([[114,5,310],[114,-59,310],[82,-27,380]], '#ad704c');
-  const crossAt = project({u:82,v:-27,z:380});
-  const cross = `<g transform="translate(${crossAt.x} ${crossAt.y})">${path('M-4 1 V-50 L1-53 7-50 V-32 L24-23 V-14 L7-22 V4Z','#94734c')}${path('M-4-33 -20-42 -25-39 V-31 L-4-20Z','#a17e51')}</g>`;
-  const porch = solid([[45,18,0],[125,18,0],[125,18,101],[85,18,146],[45,18,101]], '#f0e5cc') +
-    solid([[125,18,0],[125,-13,0],[125,-13,101],[125,18,101]], '#d9cdb0') +
-    plane(45,18,'front',arch(40,0,52,100,'#ac9874') + arch(44,0,44,94,'#8a7555') + path('M40-87 Q27-73 27-58 V0 H18 V-65 Q19-81 40-87Z','#a08a66')) +
-    solid([[38,25,103],[85,25,156],[85,-22,156],[38,-22,103]], '#b77a53') +
-    solid([[85,25,156],[132,25,103],[132,-22,103],[85,-22,156]], '#ba7c54') +
-    solid([[85,25,156],[132,25,103],[132,25,95],[85,25,148]], '#996845') +
-    solid([[38,25,103],[85,25,156],[85,25,148],[38,25,95]], '#9c6b49');
-  const steps = [2,1,0].map(i => {
-    const v = 20+i*13, z=18-i*6;
-    return solid([[44,v,z],[127,v,z],[127,v+13,z],[44,v+13,z]], '#d7cfb6') +
-      solid([[44,v+13,z],[127,v+13,z],[127,v+13,z-6],[44,v+13,z-6]], '#bfb69c') +
-      solid([[127,v,z],[127,v+13,z],[127,v+13,z-6],[127,v,z-6]], '#c7bda2');
+    solid([[0,0,0],[m.width,0,0],[m.width,0,wallEave],[c,0,m.roofRidge-m.skin],[0,0,wallEave]], '#eee4c9') +
+    solid([[m.width,0,0],[m.width,-m.depth,0],[m.width,-m.depth,wallEave],[m.width,0,wallEave]], '#e2d7b9');
+  const windows = plane(0,0,'front', arch(24,-47,16,53,'#a39878') + arch(146,-47,16,53,'#a39878')) +
+    plane(m.width,0,'side',[48,107,168].map(x => arch(x,-40,17,53,'#958a6d') + arch(x,-43,11,47,'#a69b7c')).join(''));
+  const roofFront=12, roofBack=-m.depth-m.overhang;
+  const roof = solid([[-m.overhang,roofFront,m.roofEdge],[c,roofFront,m.roofRidge],[c,roofBack,m.roofRidge],[-m.overhang,roofBack,m.roofEdge]], '#bc8058') +
+    solid([[c,roofFront,m.roofRidge],[m.width+m.overhang,roofFront,m.roofEdge],[m.width+m.overhang,roofBack,m.roofEdge],[c,roofBack,m.roofRidge]], '#b97751') +
+    solid([[m.width+m.overhang,roofFront,m.roofEdge],[m.width+m.overhang,roofBack,m.roofEdge],[m.width+m.overhang,roofBack,m.roofEdge-m.skin],[m.width+m.overhang,roofFront,m.roofEdge-m.skin]], '#986747') +
+    solid([[-m.overhang,roofFront,m.roofEdge],[c,roofFront,m.roofRidge],[c,roofFront,m.roofRidge-m.skin],[-m.overhang,roofFront,m.roofEdge-m.skin]], '#9f6b48') +
+    solid([[c,roofFront,m.roofRidge],[m.width+m.overhang,roofFront,m.roofEdge],[m.width+m.overhang,roofFront,m.roofEdge-m.skin],[c,roofFront,m.roofRidge-m.skin]], '#a76f4b');
+  const seams = [0,46,92,138,184].map(depth => solid([[c+1,-depth,mainRoofHeight(c+1)],[179,-depth,mainRoofHeight(179)],[179,-depth-2,mainRoofHeight(179)],[c+1,-depth-2,mainRoofHeight(c+1)]], '#b2734e')).join('');
+  const tl=c-t.halfWidth, tr=c+t.halfWidth;
+  const tower = solid([[tl,t.front,mainRoofHeight(tl)],[c,t.front,m.roofRidge],[tr,t.front,mainRoofHeight(tr)],[tr,t.front,t.eave],[tl,t.front,t.eave]], '#f0e5ca') +
+    solid([[tr,t.front,mainRoofHeight(tr)],[tr,t.back,mainRoofHeight(tr)],[tr,t.back,t.eave],[tr,t.front,t.eave]], '#dfd2b2') +
+    plane(c,t.front,'front',arch(0,-253,17,45,'#9c8c6c'));
+  const apex=[c,(t.front+t.back)/2,t.apex];
+  const spire = solid([[tl-t.overhang,t.front+t.overhang,t.eave],[tr+t.overhang,t.front+t.overhang,t.eave],apex], '#bd7b55') +
+    solid([[tr+t.overhang,t.front+t.overhang,t.eave],[tr+t.overhang,t.back-t.overhang,t.eave],apex], '#ad704c');
+  const cross = solid(crossOutline(), '#94734c');
+
+  const pl=c-p.halfWidth, pr=c+p.halfWidth;
+  const porchWalls = solid([[pl,p.front,0],[pr,p.front,0],[pr,p.front,p.eave],[c,p.front,p.ridge],[pl,p.front,p.eave]], '#f0e5cc') +
+    solid([[pr,p.front,0],[pr,p.back,0],[pr,p.back,p.eave],[pr,p.front,p.eave]], '#d9cdb0');
+  // Concentric arches share the building axis. The threshold is the rear edge
+  // of the upper tread, rather than a separately positioned decoration.
+  const doorway = plane(c,p.front,'front',
+    arch(0,-d.threshold,d.width+2*d.surround,d.height+d.surround,'#bca988') +
+    arch(0,-d.threshold,d.width,d.height,'#8a7555'));
+  const rl=pl-p.overhang, rr=pr+p.overhang, rf=p.front+p.overhang, rb=p.back;
+  const top=p.ridge+p.skin, edge=porchRoofHeight(rl);
+  const porchRoof = solid([[rl,rf,edge],[c,rf,top],[c,rb,top],[rl,rb,edge]], '#b77a53') +
+    solid([[c,rf,top],[rr,rf,edge],[rr,rb,edge],[c,rb,top]], '#ba7c54') +
+    solid([[rl,rf,edge],[c,rf,top],[c,rf,top-p.skin],[rl,rf,edge-p.skin]], '#9c6b49') +
+    solid([[c,rf,top],[rr,rf,edge],[rr,rf,edge-p.skin],[c,rf,top-p.skin]], '#996845') +
+    solid([[rr,rf,edge],[rr,rb,edge],[rr,rb,edge-p.skin],[rr,rf,edge-p.skin]], '#a57550');
+  const steps=stairTreads().map((tread,i) => {
+    const [a,b,e,f]=tread;
+    const nextHeight=tread[0][2]-churchModel.stair.rise;
+    return `<g data-part="step" data-step="${i}">` +
+      solid(tread,'#d7cfb6') +
+      solid([b,e,[e[0],e[1],0],[b[0],b[1],0]],'#c7bda2') +
+      solid([f,e,[e[0],e[1],nextHeight],[f[0],f[1],nextHeight]],'#bfb69c') + '</g>';
   }).join('');
-  const at = project(object.position);
-  const base = project({u:0,v:0});
-  return `<g id="${object.id}" data-kind="church" data-u="${object.position.u}" data-v="${object.position.v}" transform="translate(${at.x-base.x} ${at.y-base.y})"><g data-part="walls">${walls}${windows}</g><g data-part="roof">${roof}${seams}</g><g data-part="tower">${tower}<g data-part="spire">${spire}</g><g data-part="cross">${cross}</g></g><g data-part="porch">${porch}</g><g data-part="steps">${steps}</g></g>`;
+  const at = project(object.position), base = project({u:0,v:0});
+  return `<g id="${object.id}" data-kind="church" data-u="${object.position.u}" data-v="${object.position.v}" transform="translate(${at.x-base.x} ${at.y-base.y})"><g data-part="walls">${walls}${windows}</g><g data-part="roof">${roof}${seams}</g><g data-part="tower">${tower}<g data-part="spire">${spire}</g><g data-part="cross">${cross}</g></g><g data-part="porch">${porchWalls}<g data-part="doorway">${doorway}</g>${porchRoof}</g><g data-part="steps">${steps}</g></g>`;
 }

@@ -6,7 +6,8 @@
   "description": "A quiet, vector-rendered isometric church garden.",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "dev": "node scripts/serve.mjs"
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test"
   },
   "engines": { "node": ">=20" }
 }

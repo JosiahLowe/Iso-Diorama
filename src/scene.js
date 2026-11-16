@@ -44,14 +44,14 @@ export const scene = {
     at('flowers-right-building','flowers',771,529,{blooms:[[-8,-29,blue,.7],[1,-40,blue,.7],[11,-19,blue,.6]]}),
     at('garden-fence','fence',822,602,{scale:.88}),
     at('figure-blue','character',407,561,{scale:.86,color:'#658ca1',shade:'#567f96',hat:'hood'}),
-    at('figure-rust','character',543,565,{scale:.91,color:'#ba724c',shade:'#a96344',hat:'bonnet'}),
+    at('figure-rust','character',563,580,{scale:.91,color:'#ba724c',shade:'#a96344',hat:'bonnet'}),
     at('figure-olive','character',468,646,{scale:.91,color:'#829547',shade:'#75883d',hat:'hood'}),
     at('figure-purple','character',747,617,{scale:.92,color:'#907294',shade:'#806284',hat:'beret'}),
     at('figure-mustard','character',678,698,{scale:.96,color:'#ddb044',shade:'#cda13b',hat:'cap'}),
     at('figure-teal','character',592,724,{scale:.98,color:'#589b98',shade:'#4b8d8a',hat:'knotted'})
   ],
   path: [
-    [523,558,.53],[511,582,.7],[533,607,.88],[519,634,.85],
+    [482,559,.53],[499,581,.7],[533,607,.88],[519,634,.85],
     [548,661,.82],[532,688,.76],[555,715,.74],[574,742,.69],[556,765,.56]
   ].map(([x,y,scale],i) => at(`path-stone-${i+1}`,'stone',x,y,{scale})),
   groundDetails: [

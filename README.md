@@ -20,6 +20,9 @@ Rebuild after editing; the development server serves current build output.
 
 - `src/scene.js` holds stable IDs, isometric positions, palettes, and object data.
 - `src/geometry.js` supplies one 30-degree projection and its inverse.
+- `src/church-model.js` holds shared building dimensions: one centerline for the
+  entrance and tower, a common door/stair threshold, matching roof slopes, and
+  one continuous cross silhouette. `npm test` checks these architectural joins.
 - `src/components.js` renders independent buildings, trees, shrubs, flowers,
   characters, fence, stones, rocks, and grasses. Church parts and character heads
   and bodies have their own groups.
