@@ -1,0 +1,12 @@
+{
+  "name": "iso-diorama",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A quiet, vector-rendered isometric church garden.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/serve.mjs"
+  },
+  "engines": { "node": ">=20" }
+}
