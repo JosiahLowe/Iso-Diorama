@@ -87,13 +87,18 @@ export function Church(object) {
     solid([[-10,12,147],[85,12,238],[85,12,229],[-10,12,139]], '#9f6b48');
   // A few broad roof planes provide depth without a tiled texture.
   const seams = [0,46,92,138,184].map(d => solid([[86,-d,237],[179,-d,148],[179,-d-2,148],[86,-d-2,237]], '#b2734e')).join('');
-  const tower = solid([[52,3,154],[112,3,154],[112,3,310],[52,3,310]], '#f0e5ca') +
-    solid([[112,3,154],[112,-57,154],[112,-57,310],[112,3,310]], '#dfd2b2') +
-    plane(52,3,'front',arch(30,-253,17,45,'#9c8c6c')) +
-    solid([[45,10,311],[119,10,311],[82,-27,396]], '#bd7b55') +
-    solid([[119,10,311],[119,-64,311],[82,-27,396]], '#ad704c') +
-    solid([[45,10,311],[45,-64,311],[82,-27,396]], '#c78b64');
-  const crossAt = project({u:82,v:-27,z:396});
+  // The shaft emerges from the pitched roof, so its lower boundary follows
+  // that roof's two planes instead of covering the gable with a long rectangle.
+  const roofHeight = u => 238 - Math.abs(u - 85) * (91 / 95);
+  const tower = solid([[55,0,roofHeight(55)],[85,0,238],[109,0,roofHeight(109)],[109,0,310],[55,0,310]], '#f0e5ca') +
+    solid([[109,0,roofHeight(109)],[109,-54,roofHeight(109)],[109,-54,310],[109,0,310]], '#dfd2b2') +
+    plane(55,0,'front',arch(27,-253,17,45,'#9c8c6c'));
+  // One square hip roof, with only the two camera-facing triangles visible.
+  // Both share the apex and the nearest eave corner. Drawing the hidden rear
+  // triangle last would incorrectly cut a diagonal across the front roof face.
+  const spire = solid([[50,5,310],[114,5,310],[82,-27,380]], '#bd7b55') +
+    solid([[114,5,310],[114,-59,310],[82,-27,380]], '#ad704c');
+  const crossAt = project({u:82,v:-27,z:380});
   const cross = `<g transform="translate(${crossAt.x} ${crossAt.y})">${path('M-4 1 V-50 L1-53 7-50 V-32 L24-23 V-14 L7-22 V4Z','#94734c')}${path('M-4-33 -20-42 -25-39 V-31 L-4-20Z','#a17e51')}</g>`;
   const porch = solid([[45,18,0],[125,18,0],[125,18,101],[85,18,146],[45,18,101]], '#f0e5cc') +
     solid([[125,18,0],[125,-13,0],[125,-13,101],[125,18,101]], '#d9cdb0') +
@@ -110,5 +115,5 @@ export function Church(object) {
   }).join('');
   const at = project(object.position);
   const base = project({u:0,v:0});
-  return `<g id="${object.id}" data-kind="church" data-u="${object.position.u}" data-v="${object.position.v}" transform="translate(${at.x-base.x} ${at.y-base.y})"><g data-part="walls">${walls}${windows}</g><g data-part="roof">${roof}${seams}</g><g data-part="tower">${tower}${cross}</g><g data-part="porch">${porch}</g><g data-part="steps">${steps}</g></g>`;
+  return `<g id="${object.id}" data-kind="church" data-u="${object.position.u}" data-v="${object.position.v}" transform="translate(${at.x-base.x} ${at.y-base.y})"><g data-part="walls">${walls}${windows}</g><g data-part="roof">${roof}${seams}</g><g data-part="tower">${tower}<g data-part="spire">${spire}</g><g data-part="cross">${cross}</g></g><g data-part="porch">${porch}</g><g data-part="steps">${steps}</g></g>`;
 }
