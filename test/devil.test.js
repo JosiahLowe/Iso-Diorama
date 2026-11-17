@@ -4,12 +4,15 @@ import { DevilPeeker } from '../src/devil.js';
 import { scene } from '../src/scene.js';
 import { Tree } from '../src/components.js';
 
-test('forest trees are opaque and use solid colors rather than overlapping translucent canopies',()=>{
+test('all objects are opaque and forest trunks use a solid brown fill',()=>{
+  assert.ok(scene.objects.every(o=>(o.opacity??1)===1));
   for (const tree of scene.objects.filter(o=>o.kind==='tree')) {
     assert.equal(tree.opacity??1,1);
     const markup=Tree(tree);
     assert.ok(markup.includes('opacity="1"'));
     assert.ok(!markup.includes('stop-opacity'));
+    assert.ok(markup.includes('data-part="trunk"><path'));
+    assert.ok(markup.includes('fill="#8e6a45"'));
   }
 });
 

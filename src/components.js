@@ -2,10 +2,10 @@ import { COS30, project, solid, group, ellipse, circle, path } from './geometry.
 import { churchModel, mainRoofHeight, porchRoofHeight, stairTreads, crossOutline } from './church-model.js';
 
 export function Tree(object) {
-  const { distant = false, palette = ['#a5b252', '#91a34c', '#7f9848'] } = object;
+  const { palette = ['#a5b252', '#91a34c', '#7f9848'] } = object;
   const [light, mid, dark] = palette;
   return group(object,
-    path('M-11 0 Q-7-35-10-66 L-37-91 -32-98 -8-79 -9-120 9-120 8-79 29-101 35-94 9-62 Q8-24 18 0 L5-3 -2 2Z', distant ? '#b4b28b' : '#9d8058') +
+    `<g data-part="trunk">${path('M-11 0 Q-7-35-10-66 L-37-91 -32-98 -8-79 -9-120 9-120 8-79 29-101 35-94 9-62 Q8-24 18 0 L5-3 -2 2Z', '#8e6a45')}</g>` +
     `<g data-part="canopy">${ellipse(9, -134, 62, 56, dark)}${circle(-34, -129, 37, mid)}${circle(42, -147, 35, mid)}${circle(-22, -169, 40, light)}${circle(12, -191, 37, light)}${circle(34, -170, 29, light)}${circle(-49, -151, 26, light)}${ellipse(2, -138, 38, 30, mid)}</g>`);
 }
 

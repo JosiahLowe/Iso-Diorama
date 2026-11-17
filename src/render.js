@@ -19,11 +19,6 @@ export function renderScene(world = scene) {
       <radialGradient id="world-fade"><stop offset="0" stop-color="white"/><stop offset=".69" stop-color="white"/><stop offset=".83" stop-color="white" stop-opacity=".9"/><stop offset=".94" stop-color="white" stop-opacity=".4"/><stop offset="1" stop-color="white" stop-opacity="0"/></radialGradient>
       <mask id="page-mist" maskUnits="userSpaceOnUse" x="50" y="0" width="1000" height="850"><ellipse cx="550" cy="418" rx="490" ry="420" fill="url(#world-fade)"/></mask>
     </defs>
-    <g id="world"><g mask="url(#page-mist)">${ground}<g id="ground-details">${details}</g></g><g id="objects">${objects.map(o => {
-      const element = components[o.kind](o);
-      // Trees remain opaque so they truly occlude each other and the peeker.
-      // Keep the page-space fade on ground and low vegetation only.
-      return ['church','character','tree','devil'].includes(o.kind) ? element : `<g mask="url(#page-mist)">${element}</g>`;
-    }).join('')}</g></g>
+    <g id="world"><g mask="url(#page-mist)">${ground}</g><g id="ground-details">${details}</g><g id="objects">${objects.map(o => components[o.kind](o)).join('')}</g></g>
   </svg>`;
 }

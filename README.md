@@ -28,9 +28,9 @@ Rebuild after editing; the development server serves current build output.
 - `src/components.js` renders independent buildings, trees, shrubs, flowers,
   characters, fence, stones, rocks, and grasses. Church parts and character heads
   and bodies have their own groups.
-- `src/render.js` orders objects by ground depth and applies an elliptical opacity
-  mask. Radial gradients are used only for the ground wash and white-space fade;
-  object surfaces use flat colors.
+- `src/render.js` orders solid objects by ground depth. An elliptical opacity mask
+  applies to the ground wash alone; scene objects and stepping stones have no
+  fade masks. All object surfaces use flat colors at full opacity.
 
 The initial scene is rendered at build time. `src/client.js` animates existing SVG
 groups without rebuilding the scene. `src/navigation.js` derives ground obstacles
@@ -43,5 +43,6 @@ Church body, porch, and stairs are separate drawing layers during animation.
 SVG moves between trees only while hidden; it is drawn behind its host tree and
 clipped at the trunk edge. Reduced-motion preferences stop both animations, and
 hidden tabs pause the simulation. Tree depth uses solid color palettes; only the
-ground and low vegetation retain the white-space fade.
+ground wash retains the white-space fade. All trunks use solid brown; vegetation,
+rocks, stones, flowers, and figures remain fully opaque.
 The viewBox preserves the complete composition at every viewport size.

@@ -20,7 +20,8 @@ export function solid(points, fill) {
 }
 export function group(object, content, attributes = '') {
   const { x, y } = project(object.position);
-  return `<g id="${object.id}" data-kind="${object.kind}" data-u="${object.position.u}" data-v="${object.position.v}" transform="translate(${x} ${y}) scale(${object.scale ?? 1})" opacity="${object.opacity ?? 1}" ${attributes}>${content}</g>`;
+  // Scene objects are solid; the ground wash owns the white-space fade.
+  return `<g id="${object.id}" data-kind="${object.kind}" data-u="${object.position.u}" data-v="${object.position.v}" transform="translate(${x} ${y}) scale(${object.scale ?? 1})" opacity="1" ${attributes}>${content}</g>`;
 }
 export const ellipse = (x, y, rx, ry, fill, extra = '') => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${fill}" ${extra}/>`;
 export const circle = (x, y, r, fill) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}"/>`;
