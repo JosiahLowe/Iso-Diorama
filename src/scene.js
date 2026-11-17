@@ -6,15 +6,35 @@ const at = (id, kind, x, y, options = {}) => ({id, kind, position: unproject(x,y
 const pink = '#e9aa94', yellow = '#e5bd4b', blue = '#7f9ba8', cream = '#f1e9c7';
 const blooms = [[-19,-18,pink,1],[5,-34,pink,.9],[17,-13,pink,.85],[-5,-8,pink,.8]];
 
+// Overlapping, staggered rows read as woodland behind the clearing. The rear
+// canopy stays pale; nearer trees add depth without competing with the church.
+const forest = [
+  ...[
+    [281,300,.62,.27],[355,271,.66,.3],[424,263,.68,.28],
+    [491,253,.62,.25],[650,249,.64,.27],[724,277,.73,.3],
+    [802,303,.7,.29],[875,346,.66,.26]
+  ].map(([x,y,scale,opacity],i) => at(`forest-distant-${i+1}`,'tree',x,y,{
+    scale,opacity,distant:true,palette:['#b0bc87','#a1b07b','#95a570']
+  })),
+  ...[
+    [264,381,.7,.47],[331,351,.81,.59],[420,356,.78,.56],
+    [477,319,.72,.46],[676,302,.75,.52],[751,344,.85,.58],
+    [827,383,.83,.59],[906,413,.72,.44]
+  ].map(([x,y,scale,opacity],i) => at(`forest-near-${i+1}`,'tree',x,y,{
+    scale,opacity,palette:['#a6b673','#95a767','#849b5b']
+  }))
+];
+
 export const scene = {
   viewBox: [0,0,1100,850],
-  ground: {cx:550,cy:516,rx:380,ry:251},
+  ground: {cx:550,cy:511,rx:410,ry:270},
   objects: [
-    at('distant-tree-left','tree',234,390,{scale:.57,opacity:.21,distant:true}),
-    at('distant-tree-far-left','tree',294,309,{scale:.68,opacity:.13,distant:true}),
-    at('distant-tree-north','tree',452,240,{scale:.65,opacity:.13,distant:true}),
-    at('distant-tree-northeast','tree',782,270,{scale:.64,opacity:.13,distant:true}),
-    at('distant-tree-east','tree',897,337,{scale:.66,opacity:.15,distant:true}),
+    ...forest,
+    at('distant-tree-left','tree',234,390,{scale:.57,opacity:.29,distant:true}),
+    at('distant-tree-far-left','tree',294,309,{scale:.68,opacity:.23,distant:true}),
+    at('distant-tree-north','tree',452,240,{scale:.65,opacity:.24,distant:true}),
+    at('distant-tree-northeast','tree',782,270,{scale:.64,opacity:.24,distant:true}),
+    at('distant-tree-east','tree',897,337,{scale:.66,opacity:.25,distant:true}),
     at('back-shrub-left','shrub',413,393,{scale:1.2,opacity:.4}),
     at('back-shrub-right','shrub',788,403,{scale:1.2,opacity:.55}),
     at('tree-left-small','tree',295,451,{scale:.64,opacity:.65}),
