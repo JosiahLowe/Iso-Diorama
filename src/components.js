@@ -39,23 +39,22 @@ export function Stone(object) {
   return group(object, path('M-22-3 Q-21-10-9-12 L7-14 Q19-13 24-4 Q27 4 15 9 L-4 12 Q-19 10-24 4Z', object.color ?? '#d9cfaa'));
 }
 
+function Robe(color) {
+  return path('M-16-48 Q-23-34-24-8 Q-25 0-20 2 Q0 6 20 2 Q25 0 24-8 Q23-34 16-48Z',color);
+}
+
 export function Character(object) {
-  const { color, shade, hat } = object;
-  const body = path('M-14-49 Q-24-37-29-8 Q-30-2-23 0 Q0 7 23 0 Q30-2 28-9 Q24-35 14-49Z', color);
-  const fold = path('M9-45 Q13-22 18 2 L24 0 Q30-2 28-9 Q24-35 14-49Z', shade);
-  let head = '';
-  if (hat === 'hood') {
-    head = ellipse(0,-60,22,24,color) + path('M-16-55 -23-35 -9-40 0-35 11-40 22-34 16-54Z',color) + ellipse(0,-59,12.5,14,'#f2d4a1');
-  } else if (hat === 'bonnet') {
-    head = circle(0,-62,22,color) + circle(-13,-52,8,color) + circle(14,-52,8,color) + ellipse(0,-59,12.5,14,'#f2d4a1');
-  } else if (hat === 'cap') {
-    head = ellipse(0,-58,12.5,14,'#f2d4a1') + path('M-23-65 Q-20-81-4-81 Q12-81 19-65 L27-61 Q30-57 22-56 L-27-60 Q-31-63-23-65Z', color);
-  } else if (hat === 'knotted') {
-    head = circle(0,-81,9,color) + circle(0,-61,22,color) + path('M-18-57 -22-40 -9-43 15-42 20-53Z',color) + ellipse(0,-57,12.5,14,'#f2d4a1');
-  } else {
-    head = ellipse(0,-60,22,23,color) + path('M-25-64 Q-4-88 16-73 L31-61 Q34-55 25-54 L13-57Z', shade) + ellipse(0,-55,12.5,14,'#f2d4a1');
-  }
-  return group(object, `<g data-part="body">${body}${fold}</g><g data-part="head">${head}</g>`);
+  const color=object.color;
+  return group(object,`<g data-part="body">${Robe(color)}</g><g data-part="head">${circle(0,-62,22,color)}${circle(0,-58,14.3,'#f3c991')}</g>`);
+}
+
+export function Devil(object) {
+  const hood=circle(0,-62,22,'#aa2328');
+  const horns=path('M-16-76 Q-25-85-17-96 Q-19-87-9-83 Q-10-77-16-76Z','#c72e32') +
+    path('M16-76 Q25-85 17-96 Q19-87 9-83 Q10-77 16-76Z','#c72e32');
+  const collar=path('M-10-44 Q-19-49-24-40 L-4-32 0-38 4-32 24-40 Q19-49 10-44Z','#c02b30') + circle(0,-36,4.5,'#cf3338');
+  const hem=path('M-23-3 -16-7 -12 0 -6-5 0 2 6-5 12 0 16-7 23-3 Q24 3 0 4 Q-24 3-23-3Z','#861b21');
+  return group(object,`${Robe('#a12126')}${hem}<g data-part="head">${hood}${horns}${circle(0,-58,14.3,'#f3c991')}</g>${collar}`,'visibility="hidden" aria-hidden="true"');
 }
 
 export function Fence(object) {

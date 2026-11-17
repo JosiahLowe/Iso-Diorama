@@ -65,7 +65,7 @@ export function createCollisionWorld(scene) {
 export function insideGarden(p,radius,world) {
   const {x,y}=project(p),b=world.bounds;
   const rx=b.rx-Math.sqrt(1.5)*radius,ry=b.ry-Math.SQRT1_2*radius;
-  return ((x-b.cx)/rx)**2+((y-b.cy)/ry)**2<1;
+  return y-Math.SQRT1_2*radius>(b.minY??-Infinity) && ((x-b.cx)/rx)**2+((y-b.cy)/ry)**2<1;
 }
 
 export function canTravel(a,b,radius,world,others=[]) {

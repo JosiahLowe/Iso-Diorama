@@ -4,6 +4,7 @@ export class WanderSimulation {
   constructor(scene,random=Math.random) {
     this.random=random;
     this.world=createCollisionWorld(scene);
+    this.world.bounds.minY=scene.wandering?.minY??-Infinity;
     this.agents=scene.objects.filter(o=>o.kind==='character').map((o,i)=>({
       // A shared clearance encloses even the largest piece and keeps planning
       // and movement consistent when figures pass or wait beside each other.

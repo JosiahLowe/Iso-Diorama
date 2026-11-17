@@ -4,7 +4,7 @@ import { renderScene } from '../src/render.js';
 const svg = renderScene();
 await mkdir(new URL('../dist/', import.meta.url), {recursive:true});
 await mkdir(new URL('../dist/runtime/', import.meta.url), {recursive:true});
-for (const name of ['client','wander','navigation','scene','geometry','church-model']) {
+for (const name of ['client','wander','navigation','scene','geometry','church-model','devil']) {
   await copyFile(new URL(`../src/${name}.js`,import.meta.url),new URL(`../dist/runtime/${name}.js`,import.meta.url));
 }
 await writeFile(new URL('../dist/scene.svg', import.meta.url), svg);

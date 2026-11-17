@@ -10,37 +10,38 @@ const blooms = [[-19,-18,pink,1],[5,-34,pink,.9],[17,-13,pink,.85],[-5,-8,pink,.
 // canopy stays pale; nearer trees add depth without competing with the church.
 const forest = [
   ...[
-    [281,300,.62,.27],[355,271,.66,.3],[424,263,.68,.28],
-    [491,253,.62,.25],[650,249,.64,.27],[724,277,.73,.3],
-    [802,303,.7,.29],[875,346,.66,.26]
-  ].map(([x,y,scale,opacity],i) => at(`forest-distant-${i+1}`,'tree',x,y,{
-    scale,opacity,distant:true,palette:['#b0bc87','#a1b07b','#95a570']
+    [281,300,.62],[355,271,.66],[424,263,.68],
+    [491,253,.62],[650,249,.64],[724,277,.73],
+    [802,303,.7],[875,346,.66]
+  ].map(([x,y,scale],i) => at(`forest-distant-${i+1}`,'tree',x,y,{
+    scale,distant:true,palette:['#b0bc87','#a1b07b','#95a570']
   })),
   ...[
-    [264,381,.7,.47],[331,351,.81,.59],[420,356,.78,.56],
-    [477,319,.72,.46],[676,302,.75,.52],[751,344,.85,.58],
-    [827,383,.83,.59],[906,413,.72,.44]
-  ].map(([x,y,scale,opacity],i) => at(`forest-near-${i+1}`,'tree',x,y,{
-    scale,opacity,palette:['#a6b673','#95a767','#849b5b']
+    [264,381,.7],[331,351,.81],[420,356,.78],
+    [477,319,.72],[676,302,.75],[751,344,.85],
+    [827,383,.83],[906,413,.72]
+  ].map(([x,y,scale],i) => at(`forest-near-${i+1}`,'tree',x,y,{
+    scale,peekSide:({0:-1,2:1,3:-1,7:1})[i],palette:['#a6b673','#95a767','#849b5b']
   }))
 ];
 
 export const scene = {
   viewBox: [0,0,1100,850],
   ground: {cx:550,cy:511,rx:410,ry:270},
+  wandering: {minY:535},
   objects: [
     ...forest,
-    at('distant-tree-left','tree',234,390,{scale:.57,opacity:.29,distant:true}),
-    at('distant-tree-far-left','tree',294,309,{scale:.68,opacity:.23,distant:true}),
-    at('distant-tree-north','tree',452,240,{scale:.65,opacity:.24,distant:true}),
-    at('distant-tree-northeast','tree',782,270,{scale:.64,opacity:.24,distant:true}),
-    at('distant-tree-east','tree',897,337,{scale:.66,opacity:.25,distant:true}),
+    at('distant-tree-left','tree',234,390,{scale:.57,distant:true}),
+    at('distant-tree-far-left','tree',294,309,{scale:.68,distant:true}),
+    at('distant-tree-north','tree',452,240,{scale:.65,distant:true}),
+    at('distant-tree-northeast','tree',782,270,{scale:.64,distant:true}),
+    at('distant-tree-east','tree',897,337,{scale:.66,distant:true}),
     at('back-shrub-left','shrub',413,393,{scale:1.2,opacity:.4}),
     at('back-shrub-right','shrub',788,403,{scale:1.2,opacity:.55}),
-    at('tree-left-small','tree',295,451,{scale:.64,opacity:.65}),
+    at('tree-left-small','tree',295,451,{scale:.64}),
     at('tree-left-large','tree',365,408,{scale:1.08}),
     at('tree-right-large','tree',848,454,{scale:.78,palette:['#acb968','#9eae5d','#8fa157']}),
-    at('tree-right-back','tree',791,354,{scale:.73,opacity:.5}),
+    at('tree-right-back','tree',791,354,{scale:.73}),
     {id:'church',kind:'church',position:{u:0,v:0},depthOffset:60},
     at('left-garden-shrub','shrub',446,468,{scale:1.03,flowers:blooms}),
     at('left-tree-flowers','flowers',351,423,{blooms:[[-13,-13,blue,.8],[1,-25,pink,.9],[15,-18,pink,.8]]}),
@@ -63,12 +64,12 @@ export const scene = {
     at('flowers-right-path','flowers',771,670,{blooms:[[1,-15,cream,.9],[25,-33,yellow,.8],[14,-9,cream,.7],[34,-19,yellow,.65]]}),
     at('flowers-right-building','flowers',771,529,{blooms:[[-8,-29,blue,.7],[1,-40,blue,.7],[11,-19,blue,.6]]}),
     at('garden-fence','fence',822,602,{scale:.88}),
-    at('figure-blue','character',407,561,{scale:.86,color:'#658ca1',shade:'#567f96',hat:'hood'}),
-    at('figure-rust','character',563,580,{scale:.91,color:'#ba724c',shade:'#a96344',hat:'bonnet'}),
-    at('figure-olive','character',468,646,{scale:.91,color:'#829547',shade:'#75883d',hat:'hood'}),
-    at('figure-purple','character',747,617,{scale:.92,color:'#907294',shade:'#806284',hat:'beret'}),
-    at('figure-mustard','character',678,698,{scale:.96,color:'#ddb044',shade:'#cda13b',hat:'cap'}),
-    at('figure-teal','character',592,724,{scale:.98,color:'#589b98',shade:'#4b8d8a',hat:'knotted'})
+    at('figure-beige','character',407,561,{scale:.9,color:'#cfb591'}),
+    at('figure-rust','character',563,580,{scale:.94,color:'#a64f50'}),
+    at('figure-olive','character',468,646,{scale:.94,color:'#47583c'}),
+    at('figure-purple','character',747,617,{scale:.94,color:'#664b60'}),
+    at('figure-teal','character',592,724,{scale:.96,color:'#476a6d'}),
+    at('forest-devil','devil',264,381,{scale:.64})
   ],
   path: [
     [482,559,.53],[499,581,.7],[533,607,.88],[519,634,.85],

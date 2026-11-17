@@ -18,9 +18,9 @@ export function solid(points, fill) {
     return [p.x, p.y];
   }), fill);
 }
-export function group(object, content) {
+export function group(object, content, attributes = '') {
   const { x, y } = project(object.position);
-  return `<g id="${object.id}" data-kind="${object.kind}" data-u="${object.position.u}" data-v="${object.position.v}" transform="translate(${x} ${y}) scale(${object.scale ?? 1})" opacity="${object.opacity ?? 1}">${content}</g>`;
+  return `<g id="${object.id}" data-kind="${object.kind}" data-u="${object.position.u}" data-v="${object.position.v}" transform="translate(${x} ${y}) scale(${object.scale ?? 1})" opacity="${object.opacity ?? 1}" ${attributes}>${content}</g>`;
 }
 export const ellipse = (x, y, rx, ry, fill, extra = '') => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${fill}" ${extra}/>`;
 export const circle = (x, y, r, fill) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}"/>`;

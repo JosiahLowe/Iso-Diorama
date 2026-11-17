@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { scene } from '../src/scene.js';
-import { unproject } from '../src/geometry.js';
+import { unproject, project } from '../src/geometry.js';
 import { createCollisionWorld, canTravel, Navigator, distance, obstacleBlocks } from '../src/navigation.js';
 import { WanderSimulation } from '../src/wander.js';
 
@@ -36,14 +36,16 @@ test('routes detour around the church without cutting inflated corners',()=>{
   assert.ok(distance(previous,goal)<1e-9);
 });
 
-test('all six wander for several minutes without obstacle crossings, overlaps, or getting stuck',()=>{
+test('five foreground figures wander without obstacle crossings, overlaps, or getting stuck',()=>{
   for (const seed of [17,818,2026]) {
     const sim=new WanderSimulation(scene,seeded(seed));
+    assert.equal(sim.agents.length,5);
     const traveled=sim.agents.map(()=>0);
     for (let step=0;step<30*180;step++) {
       const previous=sim.agents.map(a=>({...a.position}));
       sim.update(step%173===0?.4:1/30); // Include occasional long frames.
       sim.agents.forEach((a,i)=>{
+        assert.ok(project(a.position).y-Math.SQRT1_2*a.radius>scene.wandering.minY);
         assert.ok(canTravel(previous[i],a.position,a.radius,sim.world),`${a.id} crossed an obstacle`);
         traveled[i]+=distance(previous[i],a.position);
         for (const b of sim.agents) if (a!==b) {

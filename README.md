@@ -1,8 +1,9 @@
 # Iso-Diorama
 
 A small church garden emerging from a white page. Programmatically generated SVG;
-no raster artwork, external runtime libraries, or interface controls. Six figures
-wander gently, choosing routes around buildings, plants, rocks, and each other.
+no raster artwork, external runtime libraries, or interface controls. Five hooded
+figures wander the foreground, avoiding buildings, plants, rocks, and each other.
+A red devil occasionally peeks from behind different opaque forest trees.
 
 ## Run
 
@@ -38,5 +39,9 @@ smooths them with swept collision checks. `src/wander.js` runs the independent
 simulation: small movement steps, pauses, and replanning when another figure
 blocks the route. Every move checks the full segment and the character's radius.
 Church body, porch, and stairs are separate drawing layers during animation.
-Reduced-motion preferences stop wandering, and hidden tabs pause the simulation.
+`src/devil.js` controls randomized hidden waits and slow peeks. The same devil
+SVG moves between trees only while hidden; it is drawn behind its host tree and
+clipped at the trunk edge. Reduced-motion preferences stop both animations, and
+hidden tabs pause the simulation. Tree depth uses solid color palettes; only the
+ground and low vegetation retain the white-space fade.
 The viewBox preserves the complete composition at every viewport size.

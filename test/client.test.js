@@ -33,7 +33,7 @@ test('client animates the existing pieces, splits occlusion layers, and pauses c
   for (const o of scene.objects) {
     const element=new Element({id:o.id,transform:'translate(0 0)'});
     if (o.kind==='church') for (const part of ['walls','roof','tower','porch','steps']) element.appendChild(new Element({'data-part':part}));
-    if (['church','character'].includes(o.kind)) layer.appendChild(element);
+    if (['church','character','tree','devil'].includes(o.kind)) layer.appendChild(element);
     else { const mask=new Element(); mask.appendChild(element); layer.appendChild(mask); }
   }
   const listeners=new Map(),mediaListeners=new Map(),frames=new Map();
@@ -46,13 +46,21 @@ test('client animates the existing pieces, splits occlusion layers, and pauses c
   assert.equal(frames.size,1);
   assert.ok(document.getElementById('church-porch'));
   assert.ok(document.getElementById('church-steps'));
-  const blue=document.getElementById('figure-blue'),initial=blue.getAttribute('transform');
-  for (let i=0;i<120;i++) {
+  const figure=document.getElementById('figure-beige'),initial=figure.getAttribute('transform');
+  let peeks=0;
+  for (let i=0;i<600;i++) {
     const [id,callback]=frames.entries().next().value; frames.delete(id); callback(i*1000/30);
     assert.equal(frames.size,1);
+    const devil=document.getElementById('forest-devil');
+    if (devil?.getAttribute('visibility')==='visible') {
+      peeks++;
+      assert.equal(devil.parentNode.parentNode.getAttribute('id'),controller.peeker.pose.tree.id);
+      assert.ok(devil.parentNode.getAttribute('clip-path').startsWith('url(#devil-peek-'));
+    }
   }
-  assert.notEqual(blue.getAttribute('transform'),initial);
-  assert.equal(document.getElementById('figure-blue'),blue,'Keep the same SVG node');
+  assert.ok(peeks>0,'The devil should peek while the foreground figures wander');
+  assert.notEqual(figure.getAttribute('transform'),initial);
+  assert.equal(document.getElementById('figure-beige'),figure,'Keep the same SVG node');
   document.hidden=true; listeners.get('visibilitychange')(); assert.equal(frames.size,0);
   document.hidden=false; listeners.get('visibilitychange')(); assert.equal(frames.size,1);
   media.matches=true; mediaListeners.get('change')(); assert.equal(frames.size,0);
