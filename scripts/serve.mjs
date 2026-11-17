@@ -4,6 +4,9 @@ import './build.mjs';
 
 const port = Number(process.env.PORT || 3000);
 const routes = new Map([['/', ['index.html','text/html; charset=utf-8']],['/index.html',['index.html','text/html; charset=utf-8']],['/scene.svg',['scene.svg','image/svg+xml']]]);
+for (const name of ['client','wander','navigation','scene','geometry','church-model']) {
+  routes.set(`/runtime/${name}.js`,[`runtime/${name}.js`,'text/javascript; charset=utf-8']);
+}
 http.createServer(async (req,res) => {
   const route = routes.get(new URL(req.url,'http://localhost').pathname);
   if (!route) { res.writeHead(404); res.end(); return; }

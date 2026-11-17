@@ -1,7 +1,8 @@
 # Iso-Diorama
 
 A small church garden emerging from a white page. Programmatically generated SVG;
-no raster artwork, runtime libraries, gameplay, or interface controls.
+no raster artwork, external runtime libraries, or interface controls. Six figures
+wander gently, choosing routes around buildings, plants, rocks, and each other.
 
 ## Run
 
@@ -12,8 +13,8 @@ npm run build
 npm run dev
 ```
 
-Open http://localhost:3000. `dist/index.html` is also a self-contained document
-that can be opened directly. `dist/scene.svg` is the standalone vector artwork.
+Open http://localhost:3000. Serve `dist/` to view the animated scene;
+`dist/scene.svg` is the standalone, static vector artwork.
 Rebuild after editing; the development server serves current build output.
 
 ## Scene architecture
@@ -30,8 +31,12 @@ Rebuild after editing; the development server serves current build output.
   mask. Radial gradients are used only for the ground wash and white-space fade;
   object surfaces use flat colors.
 
-The initial scene is rendered at build time for a fast, script-free page. The
-renderer is also browser-compatible ES modules: future interaction code can
-import `scene`, update world positions, and call `renderScene(scene)`, or target
-individual SVG groups by stable ID. No interaction handlers are installed yet.
+The initial scene is rendered at build time. `src/client.js` animates existing SVG
+groups without rebuilding the scene. `src/navigation.js` derives ground obstacles
+from scene objects and church dimensions, then finds clear routes using A* and
+smooths them with swept collision checks. `src/wander.js` runs the independent
+simulation: small movement steps, pauses, and replanning when another figure
+blocks the route. Every move checks the full segment and the character's radius.
+Church body, porch, and stairs are separate drawing layers during animation.
+Reduced-motion preferences stop wandering, and hidden tabs pause the simulation.
 The viewBox preserves the complete composition at every viewport size.
